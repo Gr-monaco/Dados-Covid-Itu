@@ -10,7 +10,7 @@ headers = {
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '3600',
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
-    }
+}
 
 
 def pegar_imagem(url, index):
@@ -20,11 +20,13 @@ def pegar_imagem(url, index):
     if req.status_code == 200:
         soup = BeautifulSoup(req.content, 'html.parser')
         imagens_raw = soup.find(class_="mkdf-post-image")
-        if imagens_raw is None:
-            imagens = soup.find(class_="mkdf-post-text-inner").find('img')
+        if imagens_raw is None:  # Se não achou esta classe, como acontece a partir de certa pagina, utilize outra
+            # lógica para achar a imagem
+            imagens = soup.find(class_="mkdf-post-text-inner").find('img') # A partir desta lógica, eles usam
+            # srcset para ter várias resoluções
             ultima_https = imagens['srcset'].rfind('https:')
             ultima_jpeg = imagens['srcset'].rfind('jpeg')
-            if ultima_jpeg == -1:
+            if ultima_jpeg == -1:  # Existe apenas um .jpg, esta parte lida deste fora de padrão
                 jpg_true = True
                 ultima_jpeg = imagens['srcset'].rfind('.jpg')
             r = requests.get(imagens['srcset'][ultima_https:ultima_jpeg + 4], headers, stream=True)
