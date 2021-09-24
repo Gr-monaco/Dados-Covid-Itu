@@ -14,6 +14,7 @@ headers = {
 
 
 def pegar_imagem(url, index):
+    jpg_true = False
     print(f'{index} url: {url}')
     req = requests.get(url, headers)
     if req.status_code == 200:
@@ -22,13 +23,19 @@ def pegar_imagem(url, index):
         if imagens_raw is None:
             imagens = soup.find(class_="mkdf-post-text-inner").find('img')
             ultima_https = imagens['srcset'].rfind('https:')
-            ultima_jpg = imagens['srcset'].rfind('jpeg')
-            r = requests.get(imagens['srcset'][ultima_https:ultima_jpg + 4], headers, stream=True)
+            ultima_jpeg = imagens['srcset'].rfind('jpeg')
+            if ultima_jpeg == -1:
+                jpg_true = True
+                ultima_jpeg = imagens['srcset'].rfind('.jpg')
+            r = requests.get(imagens['srcset'][ultima_https:ultima_jpeg + 4], headers, stream=True)
         else:
             imagens = imagens_raw.find('img')
             r = requests.get(imagens.attrs['src'], headers, stream=True)
 
-        pasta = "imagens/imagem" + str(index) + ".jpeg"
+        if jpg_true:
+            pasta = "imagens/imagem" + str(index) + ".jpg"
+        else:
+            pasta = "imagens/imagem" + str(index) + ".jpeg"
         with open(pasta, "wb") as f:
             r.raw.decode_contet = True
             shutil.copyfileobj(r.raw, f)
@@ -43,6 +50,9 @@ def pegar_imagem(url, index):
 
 url_incompleto = "https://itu.sp.gov.br/boletim-coronavirus-itu-"
 
-for i in range(312, 383):
+for i in range(316, 383):
     url_completo = url_incompleto + str(i) + "/"
     pegar_imagem(url_completo, i)
+
+# url_completo = url_incompleto + str(315) + "/"
+# pegar_imagem(url_completo, 315)
