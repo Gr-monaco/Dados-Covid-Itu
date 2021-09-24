@@ -21,11 +21,9 @@ def pegar_imagem(url, index):
         imagens_raw = soup.find(class_="mkdf-post-image")
         if imagens_raw is None:
             imagens = soup.find(class_="mkdf-post-text-inner").find('img')
-            r = requests.get(imagens.attrs['srcset'], headers, stream=True)
             ultima_https = imagens['srcset'].rfind('https:')
             ultima_jpg = imagens['srcset'].rfind('jpeg')
-            print(ultima_https, ultima_jpg)
-            print(imagens['srcset'][ultima_https:ultima_jpg+4])
+            r = requests.get(imagens['srcset'][ultima_https:ultima_jpg + 4], headers, stream=True)
         else:
             imagens = imagens_raw.find('img')
             r = requests.get(imagens.attrs['src'], headers, stream=True)
@@ -45,10 +43,6 @@ def pegar_imagem(url, index):
 
 url_incompleto = "https://itu.sp.gov.br/boletim-coronavirus-itu-"
 
-# for i in range(312, 383):
-#     url_completo = url_incompleto + str(i) + "/"
-#     pegar_imagem(url_completo, i)
-
-
-url_completo = url_incompleto + str(312) + "/"
-pegar_imagem(url_completo, 312)
+for i in range(312, 383):
+    url_completo = url_incompleto + str(i) + "/"
+    pegar_imagem(url_completo, i)
