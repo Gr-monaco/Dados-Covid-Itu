@@ -1,17 +1,18 @@
-from PIL import Image
+import cv2 as cv
 
-f = open('tamanhos.txt', 'w')
+
 nome_imagem = 'imagens/imagem'
+f = open('tamanhos.txt', 'w')
 
 
 def abrir_arquivo(nome, extensao):
     try:
-        imagem = Image.open(nome + extensao)
-        width, height = imagem.size
+        imagem = cv.imread(nome + extensao)
+        height, width, channels = imagem.shape
         f.writelines(f'Imagem {i}: Largura :{width} Altura: {height}\n')
 
-    except FileNotFoundError:
-        print(f'{nome_imagem_completa + extensao} não existe!')
+    except AttributeError:
+        print(f'{nome + extensao} não existe!')
         if extensao == '.jpeg':
             print('Tentando .jpg')
             abrir_arquivo(nome, '.jpg')
