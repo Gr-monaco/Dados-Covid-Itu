@@ -11,7 +11,7 @@ f = open('saidas.txt', 'w')
 
 for i in range(16, 72):
     print('Imagem ', str(i))
-    original = cv2.imread('ImagemAlteradas/imagem' + str(i) +'.jpeg')
+    original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) +'.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
     ret, original2 = cv2.threshold(original, 100, 255, cv2.THRESH_BINARY)
     # scale_percent = 200  # percent of original size
