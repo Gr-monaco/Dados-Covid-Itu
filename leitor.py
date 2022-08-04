@@ -9,13 +9,17 @@ import cv2
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
 CONFIG_NUMERO = "-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789"
-CONFIG_TEXTO = "-c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz '0123456789 --psm 13 --oem 3 "
+CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz 0123456789'  "
 
 
 def leitura_de_casos_descartados(numero, imagem):
-    recorte = imagem[250:350, 690:980]
-    if 16 <= numero < 72:
-        recorte = imagem[250:350, 690:980]
+    recorte = imagem[250:350, 700:985]  # funciona bem para 4 digitos
+    if 16 <= numero < 33:
+        recorte = imagem[250:350, 700:850]  # 2 dígitos
+    if 33 <= numero < 65:
+        recorte = imagem[250:350, 700:925]  # 3 dígitos
+    if 65 <= numero < 125:
+        recorte = imagem[250:350, 700:985]
 
     retorno = pytesseract.image_to_string(recorte, config=CONFIG_NUMERO).rstrip()
 
@@ -87,7 +91,7 @@ for i in range(16, 72):
     print(leitura_do_dia)
     print(casos_confirmados)
     print(obitos_confirmados)
-    print("casos des" + casos_descartados_n)
+    print(casos_descartados_n)
     f.write(str(i) + ' ' + leitura_do_dia.rstrip() + ' ' + casos_descartados_n + ' ' + str(casos_confirmados) + ' ' + obitos_confirmados + '\n')
 
 f.close()
