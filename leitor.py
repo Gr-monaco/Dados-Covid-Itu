@@ -22,14 +22,18 @@ def leitura_de_casos_confirmados(numero, imagem):
     """
     retorno = 0
     if 16 <= numero <= 38:
-        retorno = pytesseract.image_to_string(imagem, config=CONFIG_NUMERO).rstrip()
+        recorte = imagem[250:350, 160:330]
+    if 38 < numero <= 72:
+        recorte = imagem[250:297, 140:242]
+
+    retorno = pytesseract.image_to_string(recorte, config=CONFIG_NUMERO).rstrip()
 
     return retorno
 
 
 f = open('saidas.txt', 'w')
 
-for i in range(16, 48):
+for i in range(16, 72):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
@@ -52,9 +56,11 @@ for i in range(16, 48):
                                                  config="-c tessedit_char_whitelist="
                                                         "'abcdefghijklmnopqrstuvwxyz '0123456789 "
                                                         "--psm 13 --oem 3  ").rstrip()
+    casos_confirmados = leitura_de_casos_confirmados(i, original2)
     print(leitura_do_dia)
+    print(casos_confirmados)
     print(leitura_de_casos_descartados)
     limpo = ''.join(i for i in leitura_de_casos_descartados if i.isdigit())
-    f.write(str(i) + ' ' + leitura_do_dia.rstrip() + ' ' + limpo + '\n')
+    f.write(str(i) + ' ' + leitura_do_dia.rstrip() + ' ' + limpo + ' ' + casos_confirmados + '\n')
 
 f.close()
