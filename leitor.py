@@ -9,7 +9,7 @@ import cv2
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
 CONFIG_NUMERO = "-c tessedit_char_whitelist=0123456789 --psm 13 --oem 3"
-
+CONFIG_TEXTO = "-c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz '0123456789 --psm 13 --oem 3 "
 
 def leitura_de_casos_confirmados(numero, imagem):
     """
@@ -21,6 +21,7 @@ def leitura_de_casos_confirmados(numero, imagem):
     @param imagem: imagem a ser analizada
     """
     retorno = 0
+    recorte = imagem[250:350, 160:330]  # valor padrão
     if 16 <= numero <= 38:
         recorte = imagem[250:350, 160:330]
     if 38 < numero <= 72:
@@ -30,6 +31,17 @@ def leitura_de_casos_confirmados(numero, imagem):
 
     return retorno
 
+def leitura_de_data(numero, imagem):
+    retorno = "erro"
+    recorte = imagem[50:80, 1000:1250]  # valor padrão
+    if 16 <= numero <= 48:
+        recorte = imagem[50:80, 1000:1250]
+    if 48 < numero:
+        recorte = imagem[25:60, 1000:1260]
+
+    retorno = pytesseract.image_to_string(recorte, config=CONFIG_TEXTO).rstrip()
+
+    return retorno
 
 f = open('saidas.txt', 'w')
 
@@ -52,10 +64,7 @@ for i in range(16, 72):
                                                                       "--psm 13 --oem 3  ").rstrip()
     # https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
     #                                                                                  detectar espaços.
-    leitura_do_dia = pytesseract.image_to_string(dia_do_boletim,
-                                                 config="-c tessedit_char_whitelist="
-                                                        "'abcdefghijklmnopqrstuvwxyz '0123456789 "
-                                                        "--psm 13 --oem 3  ").rstrip()
+    leitura_do_dia = leitura_de_data(i, original2)
     casos_confirmados = leitura_de_casos_confirmados(i, original2)
     print(leitura_do_dia)
     print(casos_confirmados)
