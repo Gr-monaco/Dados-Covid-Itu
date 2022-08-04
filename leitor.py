@@ -11,7 +11,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 
 f = open('saidas.txt', 'w')
 
-for i in range(16, 72):
+for i in range(16, 48):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) +'.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
@@ -23,18 +23,20 @@ for i in range(16, 72):
     # original2 = cv2.resize(original2, dim, interpolation=cv2.INTER_AREA)
     casos_descartados = original2[250:350, 690:980]
     dia_do_boletim = original2[50:80, 1000:1250]
+
+    #https://docs.python.org/3/library/stdtypes.html#str.rstrip
     leitura_de_casos_descartados = pytesseract.image_to_string(casos_descartados,
-                                                               config="-c tessedit_char_whitelist=0123456789% "
-                                                                      "--psm 13 --oem 3  ")
+                                                               config="-c tessedit_char_whitelist=0123456789 "
+                                                                      "--psm 13 --oem 3  ").rstrip()
     # https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
     #                                                                                  detectar espaços.
     leitura_do_dia = pytesseract.image_to_string(dia_do_boletim,
                                                                config="-c tessedit_char_whitelist="
                                                                       "'abcdefghijklmnopqrstuvwxyz '0123456789 "
-                                                                      "--psm 13 --oem 3  ")
+                                                                      "--psm 13 --oem 3  ").rstrip()
     print(leitura_do_dia)
     print(leitura_de_casos_descartados)
     limpo = ''.join(i for i in leitura_de_casos_descartados if i.isdigit())
-    f.write(str(i) + ' ' + limpo + '\n')
+    f.write(str(i) + ' '+ leitura_do_dia.rstrip() + ' ' + limpo + '\n')
 
 f.close()
