@@ -77,7 +77,7 @@ coluna_casos_confirmados = np.array([])
 coluna_obitos_confirmados = np.array([])
 coluna_casos_descartados = np.array([])
 
-for i in range(16, 72):
+for i in range(16, 18):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
@@ -102,3 +102,15 @@ for i in range(16, 72):
     coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
     coluna_obitos_confirmados = np.append(coluna_obitos_confirmados, obitos_confirmados)
     coluna_casos_descartados = np.append(coluna_casos_descartados, casos_descartados_n)
+
+d = {'Numero da Imagem': coluna_numero_imagem,
+     'Data': coluna_dia,
+     'Casos Confirmados': coluna_casos_confirmados,
+     'Óbitos Confirmados': coluna_obitos_confirmados,
+     'Casos Descartados': coluna_casos_descartados}
+df = pd.DataFrame(data=d)
+
+# transforma em tipo int64 para tirar o .0 do numero e dps passa para string
+df['Numero da Imagem'] = df['Numero da Imagem'].astype(np.int64).astype('str', errors='raise')
+print(df['Numero da Imagem'].dtypes)
+print(df)
