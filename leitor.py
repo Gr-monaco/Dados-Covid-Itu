@@ -77,7 +77,7 @@ coluna_casos_confirmados = np.array([])
 coluna_obitos_confirmados = np.array([])
 coluna_casos_descartados = np.array([])
 
-for i in range(16, 18):
+for i in range(16, 72):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
@@ -114,3 +114,4 @@ df = pd.DataFrame(data=d)
 df['Numero da Imagem'] = df['Numero da Imagem'].astype(np.int64).astype('str', errors='raise')
 print(df['Numero da Imagem'].dtypes)
 print(df)
+df.to_excel("output.xlsx")
