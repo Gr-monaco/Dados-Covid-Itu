@@ -1,9 +1,12 @@
+import pandas as pd
+
 try:
     from PIL import Image
 except ImportError:
     import Image
 import pytesseract
 import cv2
+import numpy as np
 
 # https://muthu.co/all-tesseract-ocr-options/ <- Link para todos os parametros de tesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
@@ -25,6 +28,7 @@ def leitura_de_casos_descartados(numero, imagem):
 
     return retorno
 
+
 def leitura_de_obitos_confirmados(numero, imagem):
     recorte = imagem[610:715, 690:860]
     if 16 <= numero < 72:
@@ -33,6 +37,7 @@ def leitura_de_obitos_confirmados(numero, imagem):
     retorno = pytesseract.image_to_string(recorte, config=CONFIG_NUMERO).rstrip()
 
     return retorno
+
 
 def leitura_de_casos_confirmados(numero, imagem):
     """
@@ -43,7 +48,6 @@ def leitura_de_casos_confirmados(numero, imagem):
     @param numero: numero da imagem sendo analizada
     @param imagem: imagem a ser analizada
     """
-    retorno = 0
     recorte = imagem[250:350, 160:330]  # valor padrão
     if 16 <= numero <= 38:
         recorte = imagem[250:350, 160:330]
@@ -54,8 +58,8 @@ def leitura_de_casos_confirmados(numero, imagem):
 
     return retorno
 
+
 def leitura_de_data(numero, imagem):
-    retorno = "erro"
     recorte = imagem[50:80, 1000:1250]  # valor padrão
     if 16 <= numero <= 48:
         recorte = imagem[50:80, 1000:1250]
@@ -66,7 +70,12 @@ def leitura_de_data(numero, imagem):
 
     return retorno
 
-f = open('saidas.txt', 'w')
+
+coluna_numero_imagem = np.array([])
+coluna_dia = np.array([])
+coluna_casos_confirmados = np.array([])
+coluna_obitos_confirmados = np.array([])
+coluna_casos_descartados = np.array([])
 
 for i in range(16, 72):
     print('Imagem ', str(i))
@@ -88,10 +97,8 @@ for i in range(16, 72):
     leitura_do_dia = leitura_de_data(i, original2)
     casos_confirmados = leitura_de_casos_confirmados(i, original2)
     obitos_confirmados = leitura_de_obitos_confirmados(i, original2)
-    print(leitura_do_dia)
-    print(casos_confirmados)
-    print(obitos_confirmados)
-    print(casos_descartados_n)
-    f.write(str(i) + ' ' + leitura_do_dia.rstrip() + ' ' + casos_descartados_n + ' ' + str(casos_confirmados) + ' ' + obitos_confirmados + '\n')
-
-f.close()
+    coluna_numero_imagem = np.append(coluna_numero_imagem, i)
+    coluna_dia = np.append(coluna_dia, leitura_do_dia)
+    coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
+    coluna_obitos_confirmados = np.append(coluna_obitos_confirmados, obitos_confirmados)
+    coluna_casos_descartados = np.append(coluna_casos_descartados, casos_descartados_n)
