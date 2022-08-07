@@ -14,8 +14,9 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\t
 CONFIG_NUMERO = "-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789"
 CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyzç 0123456789'  "
 
-def achaMes(data:str):
-    listaDeMes = ['janeiro',
+
+def acha_mes(data:str):
+    listademes = ['janeiro',
                   'fevereiro',
                   'março',
                   'abril',
@@ -28,9 +29,9 @@ def achaMes(data:str):
                   'novembro',
                   'dezembro']
 
-    for mes in listaDeMes:
+    for mes in listademes:
         if mes in data:
-            return "{:02d}".format(listaDeMes.index(mes)+1)
+            return "{:02d}".format(listademes.index(mes)+1)
 
 
 def leitura_de_casos_descartados(numero, imagem):
@@ -113,7 +114,7 @@ for i in range(16, 72):
     # https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
     #                                                                                  detectar espaços.
     leitura_do_dia = leitura_de_data(i, original2)
-    leitura_do_dia = leitura_do_dia[0:2]+'/'+achaMes(leitura_do_dia)+'/'+leitura_do_dia[-4:]
+    leitura_do_dia = leitura_do_dia[0:2]+'/'+acha_mes(leitura_do_dia)+'/'+leitura_do_dia[-4:]
     casos_confirmados = leitura_de_casos_confirmados(i, original2)
     obitos_confirmados = leitura_de_obitos_confirmados(i, original2)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
