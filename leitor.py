@@ -12,7 +12,7 @@ import numpy as np
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
 CONFIG_NUMERO = "-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789"
-CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyzç 0123456789'  "
+CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz 0123456789'  "
 
 
 def acha_mes(data:str):
@@ -32,6 +32,11 @@ def acha_mes(data:str):
     for mes in listademes:
         if mes in data:
             return "{:02d}".format(listademes.index(mes)+1)
+
+
+def leitura(numero, imagem, parametros, tipo):
+
+    pass
 
 
 def leitura_de_casos_descartados(numero, imagem):
