@@ -11,7 +11,7 @@ finally:
     for i in lista:
         imagem_original = cv.imread('imagens/'+i)
         width, height, channels = imagem_original.shape
-        print(imagem_original.shape)
+        print(i,imagem_original.shape)
         nova_imagem = imagem_original.copy()
 
         if height == 1300 and width == 800:
