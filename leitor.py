@@ -9,6 +9,9 @@ import cv2
 import numpy as np
 from ConstrutorDeParametro import Parametro
 
+# https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
+#                                                                                  detectar espaços.
+# https://docs.python.org/3/library/stdtypes.html#str.rstrip
 # Ver o paddle https://github.com/PaddlePaddle/PaddleOCR
 # https://muthu.co/all-tesseract-ocr-options/ <- Link para todos os parametros de tesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
@@ -166,10 +169,8 @@ for i in range(16, 72):
     casos_descartados = original2[250:350, 690:980]
     dia_do_boletim = original2[50:80, 1000:1250]
 
-    # https://docs.python.org/3/library/stdtypes.html#str.rstrip
     casos_descartados_n = leitura_de_casos_descartados(i, original2)
-    # https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
-    #                                                                                  detectar espaços.
+
     leitura_do_dia = leitura_de_data(i, original2)
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
     casos_confirmados = leitura(i, original2,params_casos_conf, CONFIG_NUMERO)
@@ -183,8 +184,7 @@ for i in range(16, 72):
 d = {'Numero da Imagem': coluna_numero_imagem,
      'Data': coluna_dia,
      'Casos Confirmados': coluna_casos_confirmados,
-     'Óbitos Confirmados': coluna_obitos_confirmados,
-     'Casos Descartados': coluna_casos_descartados}
+     }
 df = pd.DataFrame(data=d)
 
 # transforma em tipo int64 para tirar o .0 do numero e dps passa para string
