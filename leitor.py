@@ -53,10 +53,11 @@ def limpeza(rec):
 
     return stencil
 
+
 def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
     for i in range(len(parametros.intervalo_de_imagem)):
-        if (len(parametros.intervalo_de_imagem[i]) == 1):
-            if (numero < parametros.intervalo_de_imagem[i][0]):
+        if len(parametros.intervalo_de_imagem[i]) == 1:
+            if numero < parametros.intervalo_de_imagem[i][0]:
                 dados_de_area = parametros.intervalo_de_area[-1]
                 parte = imagem[dados_de_area[0][0]:dados_de_area[0][1],
                         dados_de_area[1][0]:dados_de_area[1][1]]
@@ -64,7 +65,7 @@ def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
 
                 return pytesseract.image_to_string(limpo, config=tipo)  # pega ultimo conjunto
 
-        if (parametros.intervalo_de_imagem[i][0] < numero <= parametros.intervalo_de_imagem[i][1]):
+        if parametros.intervalo_de_imagem[i][0] < numero <= parametros.intervalo_de_imagem[i][1]:
             dados_de_area = parametros.intervalo_de_area[i]
             parte = imagem[dados_de_area[0][0]:dados_de_area[0][1],
                     dados_de_area[1][0]:dados_de_area[1][1]]
@@ -152,8 +153,6 @@ for i in range(16, 72):
     ret, original2 = cv2.threshold(original, 155, 255, cv2.THRESH_BINARY)
     # scale_percent = 200  # percent of original size
 
-
-    
     # width = int(original2.shape[1] * 300 / 100)
     # height = int(original2.shape[0] * scale_percent / 100)
     # dim = (width, height)
