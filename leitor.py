@@ -8,6 +8,7 @@ import pytesseract
 import cv2
 import numpy as np
 
+# Ver o paddle https://github.com/PaddlePaddle/PaddleOCR
 # https://muthu.co/all-tesseract-ocr-options/ <- Link para todos os parametros de tesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
@@ -15,7 +16,7 @@ CONFIG_NUMERO = "-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789"
 CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrstuvwxyz 0123456789'  "
 
 
-def acha_mes(data:str):
+def acha_mes(data: str):
     listademes = ['janeiro',
                   'fevereiro',
                   'março',
@@ -31,24 +32,31 @@ def acha_mes(data:str):
 
     for mes in listademes:
         if mes in data:
-            return "{:02d}".format(listademes.index(mes)+1)
+            return "{:02d}".format(listademes.index(mes) + 1)
 
 
 def leitura(numero, imagem, parametros, tipo):
-
     pass
 
 
 def leitura_de_casos_descartados(numero, imagem):
     recorte = imagem[250:350, 700:985]  # funciona bem para 4 digitos
-    if 16 <= numero < 33:
-        recorte = imagem[250:350, 700:850]  # 2 dígitos
-    if 33 <= numero < 65:
-        recorte = imagem[250:350, 700:925]  # 3 dígitos
-    if 65 <= numero < 125:
-        recorte = imagem[250:350, 700:985]
 
-    retorno = pytesseract.image_to_string(recorte, config=CONFIG_NUMERO).rstrip()
+    contours, hierarchy = cv2.findContours(recorte, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+    stencil = np.zeros(recorte.shape).astype(imagem.dtype)
+    ROI = []
+    for con in contours:
+        if 300 <= cv2.contourArea(con):
+            ROI.append(con)  # ROI
+
+    for con in ROI:
+        x, y, w, h = cv2.boundingRect(con)
+        roi = recorte[y:y + h, x:x + w]
+
+        stencil[y:y + h, x:x + w] = roi
+
+    retorno = pytesseract.image_to_string(stencil, config=CONFIG_NUMERO).rstrip()
 
     return retorno
 
@@ -105,7 +113,7 @@ for i in range(16, 72):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
-    ret, original2 = cv2.threshold(original, 100, 255, cv2.THRESH_BINARY)
+    ret, original2 = cv2.threshold(original, 155, 255, cv2.THRESH_BINARY)
     # scale_percent = 200  # percent of original size
     # width = int(original2.shape[1] * 300 / 100)
     # height = int(original2.shape[0] * scale_percent / 100)
@@ -119,7 +127,7 @@ for i in range(16, 72):
     # https://github.com/tesseract-ocr/tesseract/issues/2923#issuecomment-598503707 <- Resolveu o problema de não
     #                                                                                  detectar espaços.
     leitura_do_dia = leitura_de_data(i, original2)
-    leitura_do_dia = leitura_do_dia[0:2]+'/'+acha_mes(leitura_do_dia)+'/'+leitura_do_dia[-4:]
+    leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
     casos_confirmados = leitura_de_casos_confirmados(i, original2)
     obitos_confirmados = leitura_de_obitos_confirmados(i, original2)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
