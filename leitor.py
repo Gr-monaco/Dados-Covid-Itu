@@ -63,7 +63,7 @@ def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
                         dados_de_area[1][0]:dados_de_area[1][1]]
                 limpo = limpeza(parte)
 
-                return pytesseract.image_to_string(limpo, config=tipo)  # pega ultimo conjunto
+                return pytesseract.image_to_string(limpo, config=tipo).rstrip()  # pega ultimo conjunto
 
         if parametros.intervalo_de_imagem[i][0] < numero <= parametros.intervalo_de_imagem[i][1]:
             dados_de_area = parametros.intervalo_de_area[i]
@@ -71,7 +71,7 @@ def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
                     dados_de_area[1][0]:dados_de_area[1][1]]
             limpo = limpeza(parte)
 
-            return pytesseract.image_to_string(limpo, config=tipo)  # pega ultimo conjunto
+            return pytesseract.image_to_string(limpo, config=tipo).rstrip()  # pega ultimo conjunto
 
     pass
 
