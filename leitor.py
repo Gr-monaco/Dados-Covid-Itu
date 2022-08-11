@@ -7,6 +7,7 @@ except ImportError:
 import pytesseract
 import cv2
 import numpy as np
+from ConstrutorDeParametro import Parametro
 
 # Ver o paddle https://github.com/PaddlePaddle/PaddleOCR
 # https://muthu.co/all-tesseract-ocr-options/ <- Link para todos os parametros de tesseract
@@ -35,7 +36,42 @@ def acha_mes(data: str):
             return "{:02d}".format(listademes.index(mes) + 1)
 
 
-def leitura(numero, imagem, parametros, tipo):
+def limpeza(rec):
+    contours, hierarchy = cv2.findContours(rec, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+    stencil = np.zeros(rec.shape).astype(rec.dtype)
+    ROI = []
+    for con in contours:
+        if 280 <= cv2.contourArea(con):  ## 280 é uma area boa
+            ROI.append(con)  # ROI
+
+    for con in ROI:
+        x, y, w, h = cv2.boundingRect(con)
+        roi = rec[y:y + h, x:x + w]
+
+        stencil[y:y + h, x:x + w] = roi
+
+    return stencil
+
+def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
+    for i in range(len(parametros.intervalo_de_imagem)):
+        if (len(parametros.intervalo_de_imagem[i]) == 1):
+            if (numero < parametros.intervalo_de_imagem[i][0]):
+                dados_de_area = parametros.intervalo_de_area[-1]
+                parte = imagem[dados_de_area[0][0]:dados_de_area[0][1],
+                        dados_de_area[1][0]:dados_de_area[1][1]]
+                limpo = limpeza(parte)
+
+                return pytesseract.image_to_string(limpo, config=tipo)  # pega ultimo conjunto
+
+        if (parametros.intervalo_de_imagem[i][0] < numero <= parametros.intervalo_de_imagem[i][1]):
+            dados_de_area = parametros.intervalo_de_area[i]
+            parte = imagem[dados_de_area[0][0]:dados_de_area[0][1],
+                    dados_de_area[1][0]:dados_de_area[1][1]]
+            limpo = limpeza(parte)
+
+            return pytesseract.image_to_string(limpo, config=tipo)  # pega ultimo conjunto
+
     pass
 
 
@@ -115,6 +151,9 @@ for i in range(16, 72):
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
     ret, original2 = cv2.threshold(original, 155, 255, cv2.THRESH_BINARY)
     # scale_percent = 200  # percent of original size
+
+
+    
     # width = int(original2.shape[1] * 300 / 100)
     # height = int(original2.shape[0] * scale_percent / 100)
     # dim = (width, height)
