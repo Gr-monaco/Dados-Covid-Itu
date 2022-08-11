@@ -146,11 +146,17 @@ coluna_casos_confirmados = np.array([])
 coluna_obitos_confirmados = np.array([])
 coluna_casos_descartados = np.array([])
 
+params_casos_conf = Parametro()
+params_casos_conf.adiciona_intervalo([15, 38, 72]).adiciona_intervalo_de_area([
+    [[250, 360], [150, 650]],
+    [[250, 300], [150, 650]]
+]).finaliza()
+
 for i in range(16, 72):
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
-    ret, original2 = cv2.threshold(original, 155, 255, cv2.THRESH_BINARY)
+    ret, original2 = cv2.threshold(original, 170, 255, cv2.THRESH_BINARY)
     # scale_percent = 200  # percent of original size
 
     # width = int(original2.shape[1] * 300 / 100)
@@ -166,7 +172,7 @@ for i in range(16, 72):
     #                                                                                  detectar espaços.
     leitura_do_dia = leitura_de_data(i, original2)
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
-    casos_confirmados = leitura_de_casos_confirmados(i, original2)
+    casos_confirmados = leitura(i, original2,params_casos_conf, CONFIG_NUMERO)
     obitos_confirmados = leitura_de_obitos_confirmados(i, original2)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
     coluna_dia = np.append(coluna_dia, leitura_do_dia)
