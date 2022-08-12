@@ -23,7 +23,7 @@ CONFIG_TEXTO = "--psm 13 --oem 3 -c tessedit_char_whitelist='abcdefghijklmnopqrs
 def acha_mes(data: str):
     listademes = ['janeiro',
                   'fevereiro',
-                  'março',
+                  'mar',
                   'abril',
                   'maio',
                   'junho',
@@ -137,7 +137,7 @@ def leitura_de_data(numero, imagem):
     if 16 <= numero <= 48:
         recorte = imagem[50:80, 1000:1250]
     if 48 < numero:
-        recorte = imagem[25:60, 1000:1260]
+        recorte = imagem[25:63, 990:1260]
 
     retorno = pytesseract.image_to_string(recorte, config=CONFIG_TEXTO).rstrip()
 
@@ -157,10 +157,10 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
     [[225, 265], [150, 620]]
 ]).finaliza()
 
-for i in range(16, 386):
+for i in range(16, 502):
     if not os.path.exists('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg'):
         continue
-    if i == 142:
+    if i == 142 or i == 393:
         continue
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
@@ -175,13 +175,15 @@ for i in range(16, 386):
     casos_descartados = original2[250:350, 690:980]
     dia_do_boletim = original2[50:80, 1000:1250]
 
-    leitura_do_dia = leitura_de_data(i, original2)
+    leitura_do_dia = leitura_de_data(i, original2).replace(" ", "")
+    print("RAW: ", leitura_do_dia)
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
     casos_confirmados = leitura(i, original2, params_casos_conf, CONFIG_NUMERO)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
     coluna_dia = np.append(coluna_dia, leitura_do_dia)
     coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
     print('Casos confirmados: ', casos_confirmados)
+    print('Dia:', leitura_do_dia)
 
 d = {'Numero da Imagem': coluna_numero_imagem,
      'Data': coluna_dia,
