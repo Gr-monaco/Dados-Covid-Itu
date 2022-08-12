@@ -2,6 +2,7 @@ class Parametro:
     intervalo_de_imagem = []
     intervalo_de_area = []
     conjunto_de_intervalos = []
+    configuracao = '--psm 13 --oem 3'
 
     def __init__(self, intervalo_de_imagem=None, intervalo_de_area=None):
         if intervalo_de_area is None:
@@ -31,6 +32,11 @@ class Parametro:
         #
         self.intervalo_de_area = lista_de_area
         return self
+
+    def seleciona_configuracao(self, config: str):
+        self.configuracao = config
+        return self
+
 
     def finaliza(self):
         self.conjunto_de_intervalos = [self.intervalo_de_imagem, self.intervalo_de_area]

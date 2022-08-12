@@ -58,7 +58,7 @@ def limpeza(rec):
     return stencil
 
 
-def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
+def leitura(numero: int, imagem, parametros: Parametro):
     for i in range(len(parametros.intervalo_de_imagem)):
         if len(parametros.intervalo_de_imagem[i]) == 1:
             if numero > parametros.intervalo_de_imagem[i][0]:
@@ -67,7 +67,7 @@ def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
                         dados_de_area[1][0]:dados_de_area[1][1]]
                 limpo = limpeza(parte)
 
-                return pytesseract.image_to_string(limpo, config=tipo).rstrip()  # pega ultimo conjunto
+                return pytesseract.image_to_string(limpo, config=parametros.configuracao).rstrip()  # pega ultimo conjunto
 
         if parametros.intervalo_de_imagem[i][0] < numero <= parametros.intervalo_de_imagem[i][1]:
             dados_de_area = parametros.intervalo_de_area[i]
@@ -75,7 +75,7 @@ def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
                     dados_de_area[1][0]:dados_de_area[1][1]]
             limpo = limpeza(parte)
 
-            return pytesseract.image_to_string(limpo, config=tipo).rstrip()  # pega ultimo conjunto
+            return pytesseract.image_to_string(limpo, config=parametros.configuracao).rstrip()  # pega ultimo conjunto
 
     pass
 
@@ -155,7 +155,7 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
     [[250, 360], [150, 650]],
     [[250, 300], [150, 650]],
     [[225, 265], [150, 620]]
-]).finaliza()
+]).seleciona_configuracao("-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789").finaliza()
 
 for i in range(16, 502):
     if not os.path.exists('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg'):
@@ -178,7 +178,7 @@ for i in range(16, 502):
     leitura_do_dia = leitura_de_data(i, original2).replace(" ", "")
     print("RAW: ", leitura_do_dia)
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
-    casos_confirmados = leitura(i, original2, params_casos_conf, CONFIG_NUMERO)
+    casos_confirmados = leitura(i, original2, params_casos_conf)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
     coluna_dia = np.append(coluna_dia, leitura_do_dia)
     coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
