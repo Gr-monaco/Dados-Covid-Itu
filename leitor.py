@@ -158,7 +158,8 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
 ]).finaliza()
 
 for i in range(16, 386):
-    if i == 92: pass
+    if i == 92:
+        continue
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
@@ -172,10 +173,9 @@ for i in range(16, 386):
     casos_descartados = original2[250:350, 690:980]
     dia_do_boletim = original2[50:80, 1000:1250]
 
-
     leitura_do_dia = leitura_de_data(i, original2)
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
-    casos_confirmados = leitura(i, original2,params_casos_conf, CONFIG_NUMERO)
+    casos_confirmados = leitura(i, original2, params_casos_conf, CONFIG_NUMERO)
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
     coluna_dia = np.append(coluna_dia, leitura_do_dia)
     coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
