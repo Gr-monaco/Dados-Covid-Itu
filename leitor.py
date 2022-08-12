@@ -61,7 +61,7 @@ def limpeza(rec):
 def leitura(numero: int, imagem, parametros: Parametro, tipo: str):
     for i in range(len(parametros.intervalo_de_imagem)):
         if len(parametros.intervalo_de_imagem[i]) == 1:
-            if numero < parametros.intervalo_de_imagem[i][0]:
+            if numero > parametros.intervalo_de_imagem[i][0]:
                 dados_de_area = parametros.intervalo_de_area[-1]
                 parte = imagem[dados_de_area[0][0]:dados_de_area[0][1],
                         dados_de_area[1][0]:dados_de_area[1][1]]
