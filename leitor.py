@@ -158,7 +158,7 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
 ]).finaliza()
 
 for i in range(16, 386):
-    if i == 92:
+    if i == 92 or i == 142:
         continue
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
