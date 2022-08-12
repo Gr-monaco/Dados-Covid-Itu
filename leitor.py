@@ -151,13 +151,14 @@ coluna_obitos_confirmados = np.array([])
 coluna_casos_descartados = np.array([])
 
 params_casos_conf = Parametro()
-params_casos_conf.adiciona_intervalo([15, 38, 72]).adiciona_intervalo_de_area([
+params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
     [[250, 360], [150, 650]],
     [[250, 300], [150, 650]],
     [[225, 265], [150, 620]]
 ]).finaliza()
 
 for i in range(16, 386):
+    if i == 92: pass
     print('Imagem ', str(i))
     original = cv2.imread('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg')
     original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
