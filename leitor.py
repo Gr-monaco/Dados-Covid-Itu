@@ -157,6 +157,14 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
     [[225, 265], [150, 620]]
 ]).seleciona_configuracao("-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789").finaliza()
 
+
+params_obitos_conf = Parametro()
+params_obitos_conf.adiciona_intervalo([15, 71, 222]).adiciona_intervalo_de_area([
+    [[610, 720], [690, 1180]],
+    [[505, 600], [665, 1130]],
+    [[505, 600], [150, 615]]
+]).seleciona_configuracao("-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789").finaliza()
+
 for i in range(16, 502):
     if not os.path.exists('C:/Users/gr-mo/PycharmProjects/Dados-Covid-Itu/ImagensAlteradas/imagem' + str(i) + '.jpeg'):
         continue
