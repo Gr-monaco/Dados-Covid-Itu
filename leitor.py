@@ -107,10 +107,11 @@ params_casos_conf.adiciona_intervalo([15, 38, 71]).adiciona_intervalo_de_area([
 
 
 params_obitos_conf = Parametro()
-params_obitos_conf.adiciona_intervalo([15, 71, 222]).adiciona_intervalo_de_area([
+params_obitos_conf.adiciona_intervalo([15, 71, 222, 495]).adiciona_intervalo_de_area([
     [[610, 720], [690, 1180]],
     [[505, 600], [665, 1130]],
-    [[505, 600], [150, 615]]
+    [[505, 600], [150, 615]],
+    [[365, 455], [665, 1190]]
 ]).seleciona_configuracao("-l lato --psm 13 --oem 3 -c tessedit_char_whitelist=0123456789").finaliza()
 
 for i in range(16, 502):
@@ -126,15 +127,22 @@ for i in range(16, 502):
     leitura_do_dia = leitura_de_data(i, original2).replace(" ", "")
     leitura_do_dia = leitura_do_dia[0:2] + '/' + acha_mes(leitura_do_dia) + '/' + leitura_do_dia[-4:]
     casos_confirmados = leitura(i, original2, params_casos_conf)
+    obitos_confirmados = leitura(i, original2, params_obitos_conf)
+
+
+    # Adiciona ao dataframe
     coluna_numero_imagem = np.append(coluna_numero_imagem, i)
     coluna_dia = np.append(coluna_dia, leitura_do_dia)
     coluna_casos_confirmados = np.append(coluna_casos_confirmados, casos_confirmados)
+    coluna_obitos_confirmados = np.append(coluna_obitos_confirmados, obitos_confirmados)
+    print('Dia: ', leitura_do_dia)
+    print('Obitos confirmados: ', obitos_confirmados)
     print('Casos confirmados: ', casos_confirmados)
-    print('Dia:', leitura_do_dia)
 
 d = {'Numero da Imagem': coluna_numero_imagem,
      'Data': coluna_dia,
      'Casos Confirmados': coluna_casos_confirmados,
+     'Obitos Confirmados' : coluna_obitos_confirmados
      }
 df = pd.DataFrame(data=d)
 
